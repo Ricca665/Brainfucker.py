@@ -1,4 +1,4 @@
-import os
+
 import logging
 import argparse
 logging.basicConfig(level=logging.DEBUG)
@@ -15,17 +15,41 @@ parser.add_argument('-v', '--verbose',
 args = parser.parse_args()
 
 memory = [0] * 30000 # 30000 memory cells
-pc = 0 # Program counter
-pointer = 1
+pointer = 0
 
 memory[pointer] += 1
 
 brainfuck_program = open(args.brainfuck_program_name, "r")
+brainfuck_program = brainfuck_program.read()
 
-while True:
-    try:
-        memory[pointer] += 1
-        pc += 1
-        pointer += 1
-    except IndexError:
-        pointer -= 1
+try:
+    for i in brainfuck_program:
+        if i == "+":
+            memory[pointer] += 1
+        elif i == "-":
+            memory[pointer] -= 1
+        elif i == ">":
+            if pointer < 30000:
+                pointer += 1
+        elif i == "<":
+            if pointer > 0:
+                pointer -= 1
+        elif i == ".":
+            print(str(memory[pointer]))
+        elif i == ",":
+            value = ord(str(input()[0]))
+            try:
+                memory[pointer] = value
+            except Exception:
+                pass
+        elif i == "[":
+            if memory[pointer] != 0:
+                continue
+        else:
+            continue
+        if args.verbose:
+            logging.debug(memory[pointer])
+            
+except IndexError:
+    pointer -= 1
+    
