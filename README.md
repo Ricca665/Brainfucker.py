@@ -14,8 +14,9 @@ Clone the repo and run:
 To compile the release
 
 # Other features
-- [ ] Add maybe other non brainfuck commands (like for networking and other)
-- [ ] Add module functionality
-- [ ] Others to come
+- [ ] Add maybe other non native brainfuck commands (like for networking and other)
+- [x] Add module functionality
+
+*Others to come...*
 # Contribuite
 This project is licensed under the MIT License

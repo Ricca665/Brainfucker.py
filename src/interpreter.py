@@ -58,8 +58,9 @@ def run_program(brainfuck_program):
             elif i == "]":
                 if memory[pointer] != 0:
                     pc = bracemap[pc]  # Jump to matching "[" if current cell is non-zero
-            elif i == "ng":
+            elif i == "n":
                 url = re.findall(r'https?://[^\s]+', brainfuck_program)
+                url = re.findall(r'g(.*?)G', url[0])
                 if url:
                     url = url[0]  # just grab the first match
                     url_code = requests.get(url)
