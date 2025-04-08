@@ -9,5 +9,5 @@ clean:
 	@$(DELETE) *.spec
 
 interpreter:
-	@pyinstaller --onefile --windowed --icon="icon.ico" src/main.py --name="brainfucker.py.exe" --clean
+	@pyinstaller --onefile --windowed --icon="icon.ico" src/interpreter.py --name="brainfucker.py.exe" --clean
 	@$(DELETE) *.spec
