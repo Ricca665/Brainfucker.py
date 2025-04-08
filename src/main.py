@@ -1,8 +1,9 @@
-
+import requests
 import logging
 import argparse
-logging.basicConfig(level=logging.DEBUG)
+import re
 
+logging.basicConfig(level=logging.DEBUG)
 parser = argparse.ArgumentParser(
                     prog='Brainfucker.py',
                     description='Brainfuck interpreter for python',
@@ -64,7 +65,17 @@ try:
         elif i == "]":
             if memory[pointer] != 0:
                 pc = bracemap[pc]  # Jump to matching "[" if current cell is non-zero
-
+        elif i == "ng":
+            url = re.findall(r'https?://[^\s]+', brainfuck_program)
+            if url:
+                url = url[0]  # just grab the first match
+                url_code = requests.get(url)
+                logging.debug(url_code.status_code)
+                memory[pointer] = url_code.status_code
+            else:
+                pass
+        elif i == "np":
+            pass
         if args.verbose: #Debug
             logging.debug(memory[pointer])
         
