@@ -46,8 +46,8 @@ def run_program(brainfuck_program):
                     pointer -= 1
             elif i == ".":
                 print(chr(memory[pointer])) # Converts the current cell to ascii and prints it
-            elif i == "-":
-                print(int(memory[pointer])) # Like the . but it doesn't convert the number to ascii, useful for debugging
+            elif i == "_":
+                print(memory[pointer]) # Like the . but it doesn't convert the number to ascii, useful for debugging
             elif i == ",":
                 value = ord(str(input()[0]))
                 try:
@@ -65,10 +65,11 @@ def run_program(brainfuck_program):
                 if url:
                     url = url.group(1) # Grab it as a string, but just first match
                     url_code = requests.get(url) # Does the request
-                    memory[pointer] = url_code.status_code # Puts the status code in the current memory pointer
+                    url_code = url_code.status_code # Gets the status code
+                    memory[pointer] = url_code # Puts the status code in the current memory pointer
                 else:
                     pass
-            elif i == "p":
+            elif i == "p": # 4 POST requests
                 pass
             if args.verbose: #Debug
                 logging.debug(memory[pointer])
