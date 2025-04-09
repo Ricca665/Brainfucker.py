@@ -4,16 +4,15 @@ import argparse
 import re
 logging.basicConfig(level=logging.DEBUG)
 
-def main(args):
+def main(args, memory, pointer):
     brainfuck_program = open(args.brainfuck_program_name, "r")
     brainfuck_program = brainfuck_program.read()
-    run_program(brainfuck_program)
+    run_program(brainfuck_program, memory, pointer)
 
-def run_program(brainfuck_program):
+def run_program(brainfuck_program, memory, pointer):
     """Runs the brainfuck program"""
 
-    memory = [0] * 30000 # 30000 memory cells
-    pointer = 0
+
 
     memory[pointer] += 1
     pc = 0 # Just used in loops
@@ -65,12 +64,23 @@ def run_program(brainfuck_program):
                 if url:
                     url = url.group(1) # Grab it as a string, but just first match
                     url_code = requests.get(url) # Does the request
+                    pc = len(url)-1
                     url_code = url_code.status_code # Gets the status code
                     memory[pointer] = url_code # Puts the status code in the current memory pointer
                 else:
                     pass
-            elif i == "p": # 4 POST requests
-                pass
+            elif i == "p": # 4 POST requests, TODO
+                url = re.search(r'g(https?://[^\s]+)G', brainfuck_program) # Grab the url between g and G
+                if url:
+                    url = url.group(1) # Grab it as a string, but just first match
+                    url_code = requests.post(url) # Does the request
+                    pc = len(url)-1
+                    url_code = url_code.status_code # Gets the status code
+                    memory[pointer] = url_code # Puts the status code in the current memory pointer
+                    logging.debug(url_code)
+                    logging.debug(url)
+                else:
+                    pass
             if args.verbose: #Debug
                 logging.debug(memory[pointer])
             pc += 1
@@ -89,7 +99,20 @@ if __name__ == "__main__":
     parser.add_argument('brainfuck_program_name')
     parser.add_argument('-v', '--verbose',
                         action='store_true')
+    parser.add_argument('-b', '--blocks')
     args = parser.parse_args()
+
+
+    memory = [0] * 30000 # 30000 memory cells
+    pointer = 0
+
+    if args.blocks:
+        memory = None
+        try:
+            memory = [0]*int(args.blocks)
+        except Exception: # In case it's invalid
+            memory = [0]*30000 # Set it to default 
     if not args.verbose:
         logging.getLogger("urllib3").setLevel(logging.WARNING)
-    main(args)
+        
+    main(args, memory, pointer)
