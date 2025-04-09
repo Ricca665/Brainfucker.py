@@ -68,7 +68,7 @@ def run_program(brainfuck_program):
                     memory[pointer] = url_code.status_code # Puts the status code in the current memory pointer
                 else:
                     pass
-            elif i == "np":
+            elif i == "p":
                 pass
             if args.verbose: #Debug
                 logging.debug(memory[pointer])
