@@ -32,6 +32,7 @@ def run_program(brainfuck_program, memory, pointer):
         while pc < len(brainfuck_program): # While program counter is less than the lenght of the program
             i = brainfuck_program[pc] # store the current instruction in i
 
+            isInLoop = False
             """Evaluation of each instructions"""
             if i == "+":
                 memory[pointer] += 1
@@ -56,6 +57,7 @@ def run_program(brainfuck_program, memory, pointer):
             elif i == "[":
                 if memory[pointer] == 0:
                     pc = bracemap[pc]  # Jump to matching "]" if current cell is 0
+                    
             elif i == "]":
                 if memory[pointer] != 0:
                     pc = bracemap[pc]  # Jump to matching "[" if current cell is non-zero
@@ -114,5 +116,5 @@ if __name__ == "__main__":
             memory = [0]*30000 # Set it to default 
     if not args.verbose:
         logging.getLogger("urllib3").setLevel(logging.WARNING)
-        
+
     main(args, memory, pointer)
