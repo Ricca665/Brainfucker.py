@@ -46,6 +46,8 @@ def run_program(brainfuck_program):
                     pointer -= 1
             elif i == ".":
                 print(chr(memory[pointer])) # Converts the current cell to ascii and prints it
+            elif i == "-":
+                print(int(memory[pointer])) # Like the . but it doesn't convert the number to ascii, useful for debugging
             elif i == ",":
                 value = ord(str(input()[0]))
                 try:
@@ -70,7 +72,6 @@ def run_program(brainfuck_program):
                 pass
             if args.verbose: #Debug
                 logging.debug(memory[pointer])
-            
             pc += 1
 
     except IndexError: # In case the fucking pointer exits
@@ -80,8 +81,8 @@ def run_program(brainfuck_program):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-                        prog='Brainfucker.py',
-                        description='Brainfuck interpreter for python',
+                        prog='Brainfucker.py++',
+                        description='Brainfuck interpreter for python, with extra feaures',
                         epilog="""It's fucking my brain up help""")
 
     parser.add_argument('brainfuck_program_name')
