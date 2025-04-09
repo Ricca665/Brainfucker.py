@@ -59,13 +59,11 @@ def run_program(brainfuck_program):
                 if memory[pointer] != 0:
                     pc = bracemap[pc]  # Jump to matching "[" if current cell is non-zero
             elif i == "n":
-                url = re.findall(r'https?://[^\s]+', brainfuck_program)
-                url = re.findall(r'g(.*?)G', url[0])
+                url = re.search(r'g(https?://[^\s]+)G', brainfuck_program) # Grab the url between g and G
                 if url:
-                    url = url[0]  # just grab the first match
-                    url_code = requests.get(url)
-                    logging.debug(url_code.status_code)
-                    memory[pointer] = url_code.status_code
+                    url = url.group(1) # Grab it as a string, but just first match
+                    url_code = requests.get(url) # Does the request
+                    memory[pointer] = url_code.status_code # Puts the status code in the current memory pointer
                 else:
                     pass
             elif i == "np":
@@ -89,6 +87,7 @@ if __name__ == "__main__":
     parser.add_argument('brainfuck_program_name')
     parser.add_argument('-v', '--verbose',
                         action='store_true')
-
     args = parser.parse_args()
+    if not args.verbose:
+        logging.getLogger("urllib3").setLevel(logging.WARNING)
     main(args)
