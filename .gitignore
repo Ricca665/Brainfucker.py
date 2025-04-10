@@ -29,8 +29,10 @@ MANIFEST
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
+#  Also makes so that the exe doesn't get in the repo
 *.manifest
 *.spec
+*.exe
 
 # Installer logs
 pip-log.txt
