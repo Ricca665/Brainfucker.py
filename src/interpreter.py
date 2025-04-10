@@ -1,7 +1,7 @@
 import requests
 import logging
 import argparse
-import re
+from re import search
 import sys
 
 logging.basicConfig(level=logging.DEBUG)
@@ -66,7 +66,7 @@ def run_program(brainfuck_program, memory, pointer):
                     pc = bracemap[pc]  # Jump to matching "[" if current cell is non-zero
 
             elif i == "n": # GET requests
-                url = re.search(r'g(https?://[^\s]+)G', brainfuck_program) # Grab the url between g and G
+                url = search(r'g(https?://[^\s]+)G', brainfuck_program) # Grab the url between g and G
                 if url:
                     url = url.group(1) # Grab it as a string, but just first match
                     url_code = requests.get(url) # Does the request
@@ -74,10 +74,11 @@ def run_program(brainfuck_program, memory, pointer):
                     url_code = url_code.status_code # Gets the status code
                     memory[pointer] = url_code # Puts the status code in the current memory pointer
                 else:
-                    pass
+                    if args.verbose:
+                        logging.debug("Error while searching for link")
 
             elif i == "p": # POST requests
-                url = re.search(r'g(https?://[^\s]+)G', brainfuck_program) # Grab the url between g and G
+                url = search(r'g(https?://[^\s]+)G', brainfuck_program) # Grab the url between g and G
                 if url:
                     url = url.group(1) # Grab it as a string, but just first match
                     url_code = requests.post(url) # Does the request
@@ -87,7 +88,8 @@ def run_program(brainfuck_program, memory, pointer):
                     logging.debug(url_code)
                     logging.debug(url)
                 else:
-                    pass
+                    if args.verbose:
+                        logging.debug("Error while searching for link")
 
             if args.verbose: #Debug
                 logging.debug(memory[pointer])
