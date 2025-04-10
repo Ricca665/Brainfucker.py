@@ -11,14 +11,10 @@ def main(args, memory, pointer):
 
 def run_program(brainfuck_program, memory, pointer):
     """Runs the brainfuck program"""
-
-
-
-    memory[pointer] += 1
-    pc = 0 # Just used in loops
-
+    pc = 0 # Program counter
     temp_stack = []
     bracemap = {}
+
     """We need to check for each [ it's maching ]"""
     for pos, char in enumerate(brainfuck_program):
         if char == "[":
@@ -32,7 +28,6 @@ def run_program(brainfuck_program, memory, pointer):
         while pc < len(brainfuck_program): # While program counter is less than the lenght of the program
             i = brainfuck_program[pc] # store the current instruction in i
 
-            isInLoop = False
             """Evaluation of each instructions"""
             if i == "+":
                 memory[pointer] += 1
@@ -57,10 +52,12 @@ def run_program(brainfuck_program, memory, pointer):
             elif i == "[":
                 if memory[pointer] == 0:
                     pc = bracemap[pc]  # Jump to matching "]" if current cell is 0
-                    
+                    continue # We don't aumentate the program counter, fixing loops overall
+
             elif i == "]":
                 if memory[pointer] != 0:
                     pc = bracemap[pc]  # Jump to matching "[" if current cell is non-zero
+
             elif i == "n":
                 url = re.search(r'g(https?://[^\s]+)G', brainfuck_program) # Grab the url between g and G
                 if url:
@@ -85,7 +82,9 @@ def run_program(brainfuck_program, memory, pointer):
                     pass
             if args.verbose: #Debug
                 logging.debug(memory[pointer])
+
             pc += 1
+
 
     except IndexError: # In case the fucking pointer exits
         pointer -= 1 # Reduce our pointer
