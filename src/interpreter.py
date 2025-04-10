@@ -2,10 +2,17 @@ import requests
 import logging
 import argparse
 import re
+import sys
+
 logging.basicConfig(level=logging.DEBUG)
 
 def main(args, memory, pointer):
-    brainfuck_program = open(args.brainfuck_program_name, "r")
+    try:
+        brainfuck_program = open(args.brainfuck_program_name, "r")     
+    except FileNotFoundError:
+        print("ERROR: File not found!")
+        sys.exit(1)
+
     brainfuck_program = brainfuck_program.read()
     run_program(brainfuck_program, memory, pointer)
 
@@ -58,7 +65,7 @@ def run_program(brainfuck_program, memory, pointer):
                 if memory[pointer] != 0:
                     pc = bracemap[pc]  # Jump to matching "[" if current cell is non-zero
 
-            elif i == "n":
+            elif i == "n": # GET requests
                 url = re.search(r'g(https?://[^\s]+)G', brainfuck_program) # Grab the url between g and G
                 if url:
                     url = url.group(1) # Grab it as a string, but just first match
@@ -68,7 +75,8 @@ def run_program(brainfuck_program, memory, pointer):
                     memory[pointer] = url_code # Puts the status code in the current memory pointer
                 else:
                     pass
-            elif i == "p": # 4 POST requests, TODO
+
+            elif i == "p": # POST requests
                 url = re.search(r'g(https?://[^\s]+)G', brainfuck_program) # Grab the url between g and G
                 if url:
                     url = url.group(1) # Grab it as a string, but just first match
@@ -80,6 +88,7 @@ def run_program(brainfuck_program, memory, pointer):
                     logging.debug(url)
                 else:
                     pass
+
             if args.verbose: #Debug
                 logging.debug(memory[pointer])
 
@@ -88,8 +97,10 @@ def run_program(brainfuck_program, memory, pointer):
 
     except IndexError: # In case the fucking pointer exits
         pointer -= 1 # Reduce our pointer
-    except Exception: # Ignore any python exception
-        pass
+    except Exception as e: # Ignore any python exception
+        if args.verbose:
+            logging.debugging(f"The unexpected error that wasn't expected was expected: {e}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
